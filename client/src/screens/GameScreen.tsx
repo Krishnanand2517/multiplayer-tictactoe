@@ -12,7 +12,7 @@ const GameScreen = () => {
 
   const [board, setBoard] = useState<BoardState>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>(
-    gameOptions.playerOne
+    gameOptions?.playerOne
   );
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const GameScreen = () => {
             <button
               key={index}
               onClick={() => handleCellClick(index)}
-              className={`bg-white border-2 border-amber-500 rounded-lg flex items-center justify-center text-4xl font-bold transition-all p-2 z-10
+              className={`bg-white border-2 border-amber-500 rounded-lg flex items-center justify-center text-4xl font-bold transition-all aspect-square relative z-10
                 ${!cell ? "hover:bg-amber-100" : ""}`}
               style={{
                 transform: `rotate(${Math.random() * 2 - 1}deg)`,
@@ -60,7 +60,7 @@ const GameScreen = () => {
               disabled={!!cell}
             >
               <span
-                className={`${
+                className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
                   cell === "X" ? "text-amber-700" : "text-amber-900"
                 }`}
               >
