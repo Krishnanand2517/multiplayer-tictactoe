@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { GameOptions } from "../types";
+import HeadText from "../components/HeadText";
+
 const HomeScreen = () => {
   const navigate = useNavigate();
   const [playerOneName, setPlayerOneName] = useState("");
@@ -23,7 +26,7 @@ const HomeScreen = () => {
     }
 
     // Create game options state to pass to the game screen
-    const gameOptions = {
+    const gameOptions: GameOptions = {
       playerOne: {
         name: playerOneName,
         symbol: "X",
@@ -39,16 +42,7 @@ const HomeScreen = () => {
 
   return (
     <div className="max-w-md mx-auto p-8 bg-amber-50 rounded-lg shadow-lg border-4 border-amber-900 border-dotted relative">
-      <h1
-        className="text-3xl font-bold text-center mb-6 text-amber-900"
-        style={{
-          textShadow:
-            "2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff",
-          transform: "rotate(-2deg)",
-        }}
-      >
-        Tic-Tac-Toe
-      </h1>
+      <HeadText />
 
       <form onSubmit={handleStartGame} className="relative z-10">
         <div className="mb-6">
