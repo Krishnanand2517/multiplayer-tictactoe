@@ -15,30 +15,44 @@ const GameScreen = () => {
     gameOptions?.playerOne
   );
 
+  const [isDraw, setIsDraw] = useState(false);
+
   useEffect(() => {
     if (!gameOptions) {
       navigate("/");
     }
   }, [gameOptions, navigate]);
 
+  const checkDraw = (board: BoardState): boolean => {
+    if (board.every((cell) => cell !== null)) {
+      setIsDraw(true);
+      return true;
+    }
+
+    return false;
+  };
+
   const handleCellClick = (index: number) => {
-    // Already filled
-    if (board[index]) return;
+    // Already filled or game over
+    if (board[index] || isDraw) return;
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer.symbol;
     setBoard(newBoard);
 
-    setCurrentPlayer(
-      currentPlayer.symbol === gameOptions.playerOne.symbol
-        ? gameOptions.playerTwo
-        : gameOptions.playerOne
-    );
+    if (!checkDraw(newBoard)) {
+      setCurrentPlayer(
+        currentPlayer.symbol === gameOptions.playerOne.symbol
+          ? gameOptions.playerTwo
+          : gameOptions.playerOne
+      );
+    }
   };
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
     setCurrentPlayer(gameOptions.playerOne);
+    setIsDraw(false);
   };
 
   const goToHomeScreen = () => {
@@ -55,12 +69,17 @@ const GameScreen = () => {
 
       {/* GAME STATUS */}
       <div
-        className="text-center mb-4 p-2 bg-amber-100 rounded-lg border-2 border-amber-300"
+        className={`text-center mb-4 p-2 bg-amber-100 rounded-lg border-2 border-amber-300
+          ${isDraw ? "animate-pulse" : ""}`}
         style={{ transform: "rotate(0.5deg)" }}
       >
-        <p className="text-amber-900">
-          {currentPlayer.name}'s turn ({currentPlayer.symbol})
-        </p>
+        {isDraw ? (
+          <p className="text-amber-900 font-bold">🤝 It's a draw! 🤝</p>
+        ) : (
+          <p className="text-amber-900">
+            {currentPlayer.name}'s turn ({currentPlayer.symbol})
+          </p>
+        )}
       </div>
 
       {/* GAME BOARD */}
