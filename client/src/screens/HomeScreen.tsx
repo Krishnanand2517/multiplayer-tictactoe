@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { GameOptions } from "../types";
 import HeadText from "../components/HeadText";
+import DecorativeXO from "../components/DecorativeXO";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
@@ -101,19 +102,7 @@ const HomeScreen = () => {
         </button>
       </form>
 
-      {/* Decorative XO elements */}
-      <div className="absolute -rotate-12 text-4xl font-bold text-amber-200 -left-4 top-20">
-        X
-      </div>
-      <div className="absolute rotate-12 text-4xl font-bold text-amber-200 -right-4 top-32">
-        O
-      </div>
-      <div className="absolute -rotate-6 text-4xl font-bold text-amber-200 left-4 bottom-6">
-        O
-      </div>
-      <div className="absolute rotate-6 text-4xl font-bold text-amber-200 right-6 bottom-10">
-        X
-      </div>
+      <DecorativeXO decorationType="box" />
     </div>
   );
 };

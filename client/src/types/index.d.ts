@@ -9,3 +9,5 @@ export type GameOptions = {
 };
 
 export type BoardState = (string | null)[];
+
+export type DecorationType = "page" | "box";

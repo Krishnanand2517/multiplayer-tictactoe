@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom";
+
 import Footer from "./components/Footer";
+import DecorativeXO from "./components/DecorativeXO";
 
 const App = () => {
   return (
@@ -13,19 +15,7 @@ const App = () => {
       }}
     >
       <main className="flex-grow p-4 md:p-8 relative">
-        {/* Decorative XO elements */}
-        <div className="absolute -rotate-12 text-6xl font-bold text-amber-200/30 left-6 top-20 select-none">
-          X
-        </div>
-        <div className="absolute rotate-12 text-6xl font-bold text-amber-200/30 right-8 top-32 select-none">
-          O
-        </div>
-        <div className="absolute -rotate-6 text-6xl font-bold text-amber-200/30 left-10 bottom-20 select-none">
-          O
-        </div>
-        <div className="absolute rotate-6 text-6xl font-bold text-amber-200/30 right-8 bottom-40 select-none">
-          X
-        </div>
+        <DecorativeXO decorationType="page" />
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <Outlet />

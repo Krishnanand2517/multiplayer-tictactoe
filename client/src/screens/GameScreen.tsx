@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { BoardState, GameOptions, Player } from "../types";
-import HeadText from "../components/HeadText";
 import { WIN_COMBINATIONS } from "../constants";
+import HeadText from "../components/HeadText";
+import DecorativeXO from "../components/DecorativeXO";
 
 const GameScreen = () => {
   const location = useLocation();
@@ -155,19 +156,7 @@ const GameScreen = () => {
         </button>
       </div>
 
-      {/* Decorative XO elements */}
-      <div className="absolute -rotate-12 text-4xl font-bold text-amber-200 -left-4 top-20 select-none">
-        X
-      </div>
-      <div className="absolute rotate-12 text-4xl font-bold text-amber-200 -right-4 top-32 select-none">
-        O
-      </div>
-      <div className="absolute -rotate-6 text-4xl font-bold text-amber-200 left-4 bottom-6 select-none">
-        O
-      </div>
-      <div className="absolute rotate-6 text-4xl font-bold text-amber-200 right-6 bottom-8 select-none">
-        X
-      </div>
+      <DecorativeXO decorationType="box" />
     </div>
   );
 };
