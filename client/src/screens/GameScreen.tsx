@@ -36,6 +36,15 @@ const GameScreen = () => {
     );
   };
 
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setCurrentPlayer(gameOptions.playerOne);
+  };
+
+  const goToHomeScreen = () => {
+    navigate("/");
+  };
+
   if (!gameOptions) {
     return <div>Loading...</div>;
   }
@@ -43,6 +52,16 @@ const GameScreen = () => {
   return (
     <div className="max-w-md mx-auto p-6 bg-amber-50 rounded-lg shadow-lg border-4 border-amber-900 border-dotted relative">
       <HeadText />
+
+      {/* GAME STATUS */}
+      <div
+        className="text-center mb-4 p-2 bg-amber-100 rounded-lg border-2 border-amber-300"
+        style={{ transform: "rotate(0.5deg)" }}
+      >
+        <p className="text-amber-900">
+          {currentPlayer.name}'s turn ({currentPlayer.symbol})
+        </p>
+      </div>
 
       {/* GAME BOARD */}
       <div className="grid grid-cols-3 gap-2 mb-6 w-full aspect-square">
@@ -69,6 +88,25 @@ const GameScreen = () => {
             </button>
           );
         })}
+      </div>
+
+      {/* Action buttons */}
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={resetGame}
+          className="py-3 px-4 bg-amber-500 hover:bg-amber-600 rounded-lg font-bold text-white transition-all border-2 border-amber-700 shadow-md z-10"
+          style={{ transform: "rotate(-0.5deg)" }}
+        >
+          New Game
+        </button>
+
+        <button
+          onClick={goToHomeScreen}
+          className="py-3 px-4 bg-amber-400 hover:bg-amber-500 rounded-lg font-bold text-white transition-all border-2 border-amber-700 shadow-md z-10"
+          style={{ transform: "rotate(0.5deg)" }}
+        >
+          Home Screen
+        </button>
       </div>
 
       {/* Decorative XO elements */}
