@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { BoardState, GameOptions, Player } from "../types";
+import { BoardState, GameHistory, GameOptions, Player } from "../types";
 import { WIN_COMBINATIONS } from "../constants";
 import HeadText from "../components/HeadText";
 import DecorativeXO from "../components/DecorativeXO";
+import GameHistoryBox from "../components/GameHistoryBox";
 
 const GameScreen = () => {
   const location = useLocation();
@@ -19,6 +20,11 @@ const GameScreen = () => {
 
   const [winner, setWinner] = useState<Player | null>(null);
   const [isDraw, setIsDraw] = useState(false);
+  const [gameHistory, setGameHistory] = useState<GameHistory>({
+    player1Wins: 0,
+    player2Wins: 0,
+    draws: 0,
+  });
 
   useEffect(() => {
     if (!gameOptions) {
@@ -35,7 +41,20 @@ const GameScreen = () => {
           board[a] === gameOptions.playerOne.symbol
             ? gameOptions.playerOne
             : gameOptions.playerTwo;
+
         setWinner(winningPlayer);
+
+        setGameHistory((prev) => ({
+          ...prev,
+          player1Wins:
+            winningPlayer.symbol === gameOptions.playerOne.symbol
+              ? prev.player1Wins + 1
+              : prev.player1Wins,
+          player2Wins:
+            winningPlayer.symbol === gameOptions.playerTwo.symbol
+              ? prev.player2Wins + 1
+              : prev.player2Wins,
+        }));
 
         return true;
       }
@@ -47,6 +66,12 @@ const GameScreen = () => {
   const checkDraw = (board: BoardState) => {
     if (board.every((cell) => cell !== null)) {
       setIsDraw(true);
+
+      setGameHistory((prev) => ({
+        ...prev,
+        draws: prev.draws + 1,
+      }));
+
       return true;
     }
 
@@ -136,7 +161,10 @@ const GameScreen = () => {
         })}
       </div>
 
-      {/* Action buttons */}
+      {/* GAME HISTORY */}
+      <GameHistoryBox gameOptions={gameOptions} gameHistory={gameHistory} />
+
+      {/* ACTION BUTTONS */}
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={resetGame}
