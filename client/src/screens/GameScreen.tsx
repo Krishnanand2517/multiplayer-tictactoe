@@ -20,6 +20,7 @@ const GameScreen = () => {
 
   const [winner, setWinner] = useState<Player | null>(null);
   const [isDraw, setIsDraw] = useState(false);
+  const [winningLine, setWinningLine] = useState<number[] | null>(null);
   const [gameHistory, setGameHistory] = useState<GameHistory>({
     player1Wins: 0,
     player2Wins: 0,
@@ -43,6 +44,7 @@ const GameScreen = () => {
             : gameOptions.playerTwo;
 
         setWinner(winningPlayer);
+        setWinningLine(combo);
 
         setGameHistory((prev) => ({
           ...prev,
@@ -103,6 +105,7 @@ const GameScreen = () => {
     setCurrentPlayer(gameOptions.playerOne);
     setIsDraw(false);
     setWinner(null);
+    setWinningLine(null);
   };
 
   const goToHomeScreen = () => {
@@ -137,11 +140,18 @@ const GameScreen = () => {
       {/* GAME BOARD */}
       <div className="grid grid-cols-3 gap-2 mb-6 w-full aspect-square">
         {board.map((cell, index) => {
+          const isWinningCell = winningLine?.includes(index);
+
           return (
             <button
               key={index}
               onClick={() => handleCellClick(index)}
-              className={`bg-white border-2 border-amber-500 rounded-lg flex items-center justify-center text-4xl font-bold transition-all aspect-square relative z-10
+              className={`border-2 rounded-lg flex items-center justify-center text-4xl font-bold transition-all aspect-square relative z-10
+                ${
+                  isWinningCell
+                    ? "bg-amber-200 border-amber-600"
+                    : "bg-white border-amber-500"
+                }
                 ${!cell && !isDraw && !winner ? "hover:bg-amber-100" : ""}`}
               style={{
                 transform: `rotate(${Math.random() * 2 - 1}deg)`,
