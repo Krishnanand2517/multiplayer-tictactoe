@@ -1,11 +1,15 @@
+export type GameMode = "local" | "online";
+
 export type Player = {
   name: string;
   symbol: string;
 };
 
 export type GameOptions = {
+  gameMode: GameMode;
   playerOne: Player;
   playerTwo: Player;
+  gameCode: string;
 };
 
 export type BoardState = (string | null)[];
