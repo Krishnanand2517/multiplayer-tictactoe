@@ -2,13 +2,13 @@ export type GameMode = "local" | "online";
 
 export type Player = {
   name: string;
-  symbol: string;
+  symbol: "X" | "O";
 };
 
 export type GameOptions = {
   gameMode: GameMode;
-  playerOne: Player;
-  playerTwo: Player;
+  playerOne?: Player;
+  playerTwo?: Player;
   gameCode: string;
 };
 

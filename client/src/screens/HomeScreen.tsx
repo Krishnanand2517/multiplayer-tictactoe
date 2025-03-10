@@ -1,18 +1,64 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { GameMode, GameOptions } from "../types";
 import HeadText from "../components/HeadText";
 import DecorativeXO from "../components/DecorativeXO";
+import { useSocket } from "../hooks/useSocket";
 
 const HomeScreen = () => {
+  const { socket, connect, isConnected } = useSocket();
   const navigate = useNavigate();
+
   const [playerOneName, setPlayerOneName] = useState("");
   const [playerTwoName, setPlayerTwoName] = useState("");
   const [gameMode, setGameMode] = useState<GameMode>("local");
   const [gameCode, setGameCode] = useState("");
   const [isCreatingGame, setIsCreatingGame] = useState(true);
   const [error, setError] = useState("");
+
+  const handleRoomJoin = useCallback(({ roomId }: { roomId: string }) => {
+    console.log("Joined room:", roomId);
+  }, []);
+
+  const handleUserJoined = useCallback(
+    ({ username, socketId }: { username: string; socketId: string }) => {
+      console.log(`${username} (${socketId}) joined the room`);
+
+      // Player joining
+      if (!isCreatingGame) {
+        const gameOptions: GameOptions = {
+          gameMode: "online",
+          playerTwo: {
+            name: playerOneName,
+            symbol: "O",
+          },
+          gameCode,
+        };
+
+        navigate("/game", { state: gameOptions });
+      }
+    },
+    [playerOneName, navigate, isCreatingGame, gameCode]
+  );
+
+  useEffect(() => {
+    if (gameMode === "online" && !isConnected) {
+      connect();
+    }
+  }, [gameMode, isConnected, connect]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("room:join", handleRoomJoin);
+    socket.on("user:joined", handleUserJoined);
+
+    return () => {
+      socket.off("room:join", handleRoomJoin);
+      socket.off("user:joined", handleUserJoined);
+    };
+  }, [socket, handleRoomJoin, handleUserJoined]);
 
   const generateGameCode = (): string => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -38,7 +84,40 @@ const HomeScreen = () => {
       return;
     }
 
-    // Create game options state to pass to the game screen
+    const generatedCode = isCreatingGame ? generateGameCode() : gameCode;
+
+    if (gameMode === "online") {
+      if (!isConnected) {
+        setError("Failed to connect to the game server. Please try again.");
+        return;
+      }
+
+      socket?.emit("room:join", {
+        username: playerOneName,
+        roomId: generatedCode,
+      });
+
+      if (isCreatingGame) {
+        const gameOptions: GameOptions = {
+          gameMode,
+          playerOne: {
+            name: playerOneName,
+            symbol: "X",
+          },
+          playerTwo: {
+            name: "", // waiting for player two
+            symbol: "O",
+          },
+          gameCode: generatedCode,
+        };
+
+        navigate("/game", { state: gameOptions });
+      }
+
+      return;
+    }
+
+    // For local game
     const gameOptions: GameOptions = {
       gameMode,
       playerOne: {
@@ -49,7 +128,7 @@ const HomeScreen = () => {
         name: playerTwoName,
         symbol: "O",
       },
-      gameCode: isCreatingGame ? generateGameCode() : gameCode,
+      gameCode: generatedCode,
     };
 
     navigate("/game", { state: gameOptions });
