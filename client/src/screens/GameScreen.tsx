@@ -13,10 +13,10 @@ const GameScreen = () => {
 
   const gameOptions = location.state as GameOptions;
 
+  const initialPlayer = gameOptions.playerOne ?? gameOptions.playerTwo!;
+
   const [board, setBoard] = useState<BoardState>(Array(9).fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState<Player>(
-    gameOptions?.playerOne
-  );
+  const [currentPlayer, setCurrentPlayer] = useState<Player>(initialPlayer);
 
   const [winner, setWinner] = useState<Player | null>(null);
   const [isDraw, setIsDraw] = useState(false);
@@ -38,10 +38,19 @@ const GameScreen = () => {
       const [a, b, c] = combo;
 
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        const winningPlayer =
-          board[a] === gameOptions.playerOne.symbol
-            ? gameOptions.playerOne
-            : gameOptions.playerTwo;
+        // const winningPlayer =
+        //   board[a] === gameOptions.playerOne.symbol
+        //     ? gameOptions.playerOne
+        //     : gameOptions.playerTwo;
+        let winningPlayer: Player;
+
+        if (board[a] === gameOptions.playerOne?.symbol) {
+          winningPlayer = gameOptions.playerOne;
+        } else if (board[a] === gameOptions.playerTwo?.symbol) {
+          winningPlayer = gameOptions.playerTwo;
+        } else {
+          continue; // Won't happen, but TypeScript wants full coverage
+        }
 
         setWinner(winningPlayer);
         setWinningLine(combo);
@@ -49,11 +58,11 @@ const GameScreen = () => {
         setGameHistory((prev) => ({
           ...prev,
           player1Wins:
-            winningPlayer.symbol === gameOptions.playerOne.symbol
+            winningPlayer.symbol === gameOptions.playerOne?.symbol
               ? prev.player1Wins + 1
               : prev.player1Wins,
           player2Wins:
-            winningPlayer.symbol === gameOptions.playerTwo.symbol
+            winningPlayer.symbol === gameOptions.playerTwo?.symbol
               ? prev.player2Wins + 1
               : prev.player2Wins,
         }));
@@ -91,18 +100,27 @@ const GameScreen = () => {
     if (!checkWin(newBoard)) {
       if (!checkDraw(newBoard)) {
         // Switch players
-        setCurrentPlayer(
-          currentPlayer.symbol === gameOptions.playerOne.symbol
-            ? gameOptions.playerTwo
-            : gameOptions.playerOne
-        );
+        if (gameOptions.gameMode === "local") {
+          setCurrentPlayer((prevPlayer) => {
+            return prevPlayer.symbol === gameOptions.playerOne.symbol
+              ? gameOptions.playerTwo
+              : gameOptions.playerOne;
+          });
+        } else {
+          setCurrentPlayer(currentPlayer);
+        }
+        // setCurrentPlayer(
+        //   currentPlayer.symbol === gameOptions.playerOne.symbol
+        //     ? gameOptions.playerTwo
+        //     : gameOptions.playerOne
+        // );
       }
     }
   };
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));
-    setCurrentPlayer(gameOptions.playerOne);
+    setCurrentPlayer(gameOptions.playerOne ?? gameOptions.playerTwo!);
     setIsDraw(false);
     setWinner(null);
     setWinningLine(null);
