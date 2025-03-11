@@ -5,12 +5,22 @@ export type Player = {
   symbol: "X" | "O";
 };
 
-export type GameOptions = {
-  gameMode: GameMode;
-  playerOne?: Player;
-  playerTwo?: Player;
+type LocalGameOptions = {
+  gameMode: "local";
   gameCode: string;
+  playerOne: Player;
+  playerTwo: Player;
 };
+
+type OnlineGameOptions = {
+  gameMode: "online";
+  gameCode: string;
+} & (
+  | { playerOne: Player; playerTwo?: Player }
+  | { playerOne?: Player; playerTwo: Player }
+);
+
+export type GameOptions = LocalGameOptions | OnlineGameOptions;
 
 export type BoardState = (string | null)[];
 
